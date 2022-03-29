@@ -9,6 +9,7 @@
     "serve": "vite preview"
   },
   "devDependencies": {
+    "@sveltejs/adapter-static": "^1.0.0-next.29",
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.37",
     "@testing-library/svelte": "^3.0.3",
     "@types/jest": "^26.0.21",

@@ -9,9 +9,8 @@
   const tags = Array.from(new Set(dataset.map(it => it.tags).flat()))
 
   $: sortedDataset = (search ? dataset.sort(sort(search, { iterator: (item) => item.name })) : dataset)
-  $: tagSortedDataset = tag ? sortedDataset.filter(it => it.tags.includes((tag as any).value)) : sortedDataset
 
-  $: console.log(tagSortedDataset)
+  $: tagSortedDataset = tag ? sortedDataset.filter(it => (tag as any).every(chosen => it.tags.includes(chosen.value))) : sortedDataset
 
 </script>
 <div class="w-full p-8 text-white bg-black">
@@ -21,7 +20,7 @@
   <div class="m-8">
     <div class="flex flex-row">
       <input type="text" bind:value={search} placeholder="Search" class="border-b mr-4 border-gray-200">
-      <Select bind:value={tag} items={tags}></Select>
+      <Select bind:value={tag} isMulti={true} items={tags}></Select>
     </div>
     <div class="mb-4"></div>
     {#each tagSortedDataset as data}
