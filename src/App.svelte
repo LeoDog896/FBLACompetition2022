@@ -1,42 +1,45 @@
 <script lang="ts">
-  import logo from './assets/svelte.png'
-  import Counter from './lib/Counter.svelte'
+  import { dataset } from "./lib/dataset"
+  import Select from "svelte-select"
+  import { sort } from 'fuzzyjs'
+
+  let search: string
+  let tag: string
+
+  const tags = Array.from(new Set(dataset.map(it => it.tags).flat()))
+
+  $: sortedDataset = (search ? dataset.sort(sort(search, { iterator: (item) => item.name })) : dataset)
+  $: tagSortedDataset = tag ? sortedDataset.filter(it => it.tags.includes((tag as any).value)) : sortedDataset
+
+  $: console.log(tagSortedDataset)
+
 </script>
-
-<main class="text-center p-4 mx-0">
-  <img width="100" height="100" src={logo} alt="Svelte Logo" class="inline-block" />
-  <h1 class="text-6xl uppercase font-thin leading-tight my-8 mx-auto max-w-xs sm:max-w-xs">Hello Vite!</h1>
-
-  <Counter id="0" />
-
-  <p class="max-w-xs sm:max-w-none my-4 mx-auto leading-5">
-    Visit <a class="text-red-600 hover:underline" href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte
-    apps.
-  </p>
-
-  <p class="max-w-xs sm:max-w-none my-4 mx-auto leading-5">
-    Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for
-    the officially supported framework, also powered by Vite!
-  </p>
-
-  <div class="text-red-500 p-2">
-    <a href="https://svelte.dev/" target="_blank" class="p-2 hover:underline">Svelte</a> +
-    <a href="https://tailwindcss.com/" target="_blank" class="p-2 hover:underline">Tailwind CSS</a> +
-    <a href="https://www.typescriptlang.org/" target="_blank" class="p-2 hover:underline">TypeScript</a> +
-    <a href="https://vitejs.dev/" target="_blank" class="p-2 hover:underline">Vite</a>
+<div class="w-full p-8 text-white bg-black">
+  <h1 class="text-xl">Virginia is for Lovers</h1>
+</div>
+<div class="flex flex-col">
+  <div class="m-8">
+    <div class="flex flex-row">
+      <input type="text" bind:value={search} placeholder="Search" class="border-b mr-4 border-gray-200">
+      <Select bind:value={tag} items={tags}></Select>
+    </div>
+    <div class="mb-4"></div>
+    {#each tagSortedDataset as data}
+      <div class="flex flex-row mb-4">
+        <img class="flex-shrink mr-4 rounded-lg w-[12%]" src={data.image} alt="Location">
+        <div>
+          <h1 class="text-xl">{data.name}</h1>
+          {#if data.address}
+            <p>Address: {data.address}</p>
+          {/if}
+          {#if data.url}
+            <p>Website: <a href={data.url} class="transition-all text-blue-400 underline hover:text-blue-600">{data.url}</a></p>
+          {/if}
+          {#if data.tags.length !== 0}
+            <p>Tags: {data.tags.join(", ")}</p>
+          {/if}
+        </div>
+      </div>
+    {/each}
   </div>
-</main>
-
-<style>
-  :root {
-    --svelte-rgb: 255, 62, 0;
-  }
-
-  h1 {
-    color: rgb(var(--svelte-rgb));
-  }
-</style>
-
-<!-- <style global style lang="postcss">
-  
-</style> -->
+</div>
